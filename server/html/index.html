@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<title>POVWand</title>
+		<link rel="shortcut icon" href="favicon.png" type="image/png" />
+		<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+		<script type="text/javascript" src="main.js"></script>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			body {
+				font-family: Helvetica, Arial;
+				font-size: 12px;
+				line-height: 1.28em;
+				background: #d0d0d0;
+				padding: 20px;
+			}
+			div.box {
+				background: #fafafa;
+				border: 1px solid #808080;
+				padding: 10px;
+			}
+			#options {
+				float: right;
+				width: 258px;
+			}
+			button {
+				padding: 10px;
+				margin: 5px;
+			}
+			label {
+				margin: 0 10px 0 0;
+			}
+			input[type="range"] {
+				position: relative;
+				top: 4px;
+				width: 190px;
+			}
+			#dump {
+				padding: 10px 0;
+			}
+			#dump a {
+				display: block;
+				padding: 0 0 5px 0;
+			}
+			#dump a:hover {
+				background: #66F;
+				color: #fafafa;
+				cursor: pointer;
+			}
+			h1 {
+				text-align: center;
+				margin: 0 0 10px 0;
+			}
+			#pattern {
+				margin: 0 298px 0 0;
+				padding: 20px 0;
+			}
+			#pattern div {
+				margin: 0 auto;
+				width: 720px;
+				height: 360px;
+				position: relative;
+				border: 1px solid #000;
+				overflow: hidden;
+				padding: 20px;
+			}
+			#pattern div span {
+				display: block;
+				cursor: pointer;
+				float: left;
+				width: 16px;
+				height: 16px;
+				border: 1px solid #000;
+			}
+			#pattern div span.c {
+				clear: left;
+			}
+			#pattern div span.a {
+				background: #66F;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="options" class="box">
+			<button onclick="req('dump')" style="width: 135px">Dump EEPROM</button>
+			<button onclick="if(confirm('Sure?')) req('reset')">Reset EEPROM</button>
+			<div id="dump"></div>
+		</div>
+		<div id="pattern" class="box"><div></div></div>
+	</body>
+</html>
