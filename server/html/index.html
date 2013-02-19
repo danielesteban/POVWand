@@ -62,19 +62,17 @@
 			}
 			#pattern div {
 				margin: 0 auto;
-				width: 720px;
-				height: 360px;
+				width: 875px;
+				height: 190px;
 				position: relative;
-				border: 1px solid #000;
 				overflow: hidden;
-				padding: 20px;
 			}
 			#pattern div span {
 				display: block;
 				cursor: pointer;
 				float: left;
-				width: 16px;
-				height: 16px;
+				width: 17px;
+				height: 17px;
 				border: 1px solid #000;
 			}
 			#pattern div span.c {
@@ -89,6 +87,7 @@
 		<div id="options" class="box">
 			<button onclick="req('dump')" style="width: 135px">Dump EEPROM</button>
 			<button onclick="if(confirm('Sure?')) req('reset')">Reset EEPROM</button>
+			<input type="checkbox" id="clearOnDrag" /> <label>Clear when draggin</label>
 			<div id="dump"></div>
 		</div>
 		<div id="pattern" class="box"><div></div></div>

@@ -15,6 +15,14 @@ function addEvent(e, func, obj) {
 	}
 }
 
+function removeEvent(event, func, element) {
+    if(element.removeEventListener) {
+        element.removeEventListener(event, func, false);
+    } else {
+        element.detachEvent("on" + event, func);
+    }
+}
+
 function str_replace(string, find, replace) {
     var i = string.indexOf(find),
         len;
@@ -179,7 +187,8 @@ if (!String.prototype.trim) {
 })();
 
 //Main Stuff
-var socket, pattern = [];
+var socket, pattern = [],
+    numSteps = 46;
 
 function req(func, params) {
 	if(!socket.socket.connected) return;
@@ -193,13 +202,26 @@ function onResize() {
 
 function output() {
     var out = [];
-    for(var x=39; x>=0; x--) {
+    for(var x=numSteps - 1; x>=0; x--) {
         var offset = 0;
         for(var y=0; y<10; y++) {
-            out.push(pattern[(y * 40) + x] ? 1 : 0);
+            out.push(pattern[(y * numSteps) + x] ? 1 : 0);
         }
     }
     console.log(out.toString());
+}
+
+function drawPattern(clear) {
+    var div = $('pattern').firstChild;
+    while(div.firstChild !== null) div.removeChild(div.firstChild);
+    for(var x=0; x<numSteps * 10; x++) {
+        var sp = cE('span');
+        x % 46 == 0 && (sp.className = 'c');
+        clear && (pattern[x] = false);
+        pattern[x] && (sp.className += ' a');
+        
+        div.appendChild(sp);
+    }
 }
 		
 addEvent('load', function() {
@@ -219,24 +241,42 @@ addEvent('load', function() {
 		
 	});
 	socket.on('dump', function(dump) {
-		
+		pattern = dump;
+        drawPattern();
 	});
 	socket.on('reset', function() {
 		
 	});
 
-    for(var x=0; x<400; x++) {
-        var sp = cE('span');
-        x % 40 == 0 && (sp.className = 'c');
-        pattern[x] = false;
-        addEvent('click', function(x) {
-            return function(e) {
-                pattern[x] = !pattern[x];
+    drawPattern(true);    
+
+    var div = $('pattern').firstChild,
+        check = $('clearOnDrag'),
+        lastSp,
+        mousemove = function(e) {
+            if(e.target != lastSp) {
+                var sp = e.target,
+                    x = 0;
+                
+                while((sp = sp.previousSibling) !== null) x++;
+                pattern[x] = lastSp ? !check.checked : !pattern[x];
                 window[(pattern[x] ? 'add' : 'remove') + 'Class'](e.target, 'a');
+                lastSp = e.target;
             }
-        }(x), sp);
-        $('pattern').firstChild.appendChild(sp);
-    }
+        };
+
+    addEvent('mousedown', function(e) {
+        addEvent('mousemove', mousemove, div);
+        addEvent('mouseup', function() {
+            removeEvent('mousemove', mousemove, div);
+        }, window);
+        mousemove(e);
+    }, div);
+
+    addEvent('mouseup', function() {
+        removeEvent('mousemove', mousemove, div);
+        lastSp = null;
+    }, div);
 
     //addEvent('resize', onResize, window);
     //onResize();

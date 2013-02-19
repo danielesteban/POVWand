@@ -44,13 +44,19 @@ serial.on('data', function(data) {
 	if(!buffer) buffer = data;
 	else buffer = Buffer.concat([buffer, data]);
 	if(!func) {
+		dataSize = null;
 		switch(buffer[0]) {
 			case 1:
 				func = 'dump';
-				dataSize = null;
 			break;
 			case 2:
 				io.sockets.emit("reset");
+			break;
+			case 3:
+				//io.sockets.emit("stop");
+			break;
+			case 255: //init
+				req(2); //Stop flashing
 		}
 		buffer = buffer.slice(1);
 	}
@@ -58,22 +64,29 @@ serial.on('data', function(data) {
 	switch(func) {
 		case 'dump':
 			if(!dataSize) {
-				if(buffer.length < 2) return;
-				dataSize = buffer[0] + (buffer[1] << 8);
-				buffer = buffer.slice(2);
+				if(buffer.length < 1) return;
+				dataSize = buffer[0] * 10;
+				buffer = buffer.slice(1);
 			}
 	}
-	if(buffer.length < dataSize) return;
+	if(dataSize != null && buffer.length < dataSize) return;
 	switch(func) {
 		case 'dump':
-			var data = [];
-			for(var x=0; x<dataSize; x++) {
-				data.push(buffer[x]);
-			}
+			var data = [],
+				numSteps = dataSize / 10,
+				c = 0;
+
+			for(var x=numSteps - 1; x>=0; x--) {
+		        var offset = 0;
+		        for(var y=0; y<10; y++) {
+		            data[(y * numSteps) + x] = buffer[c];
+		            c++;
+		        }
+		    }
 			io.sockets.emit("dump", data);
 	}
 	func = null;
-	buffer = buffer.slice(dataSize);
+	dataSize != null && (buffer = buffer.slice(dataSize));
 });
 
 io.configure(function (){
