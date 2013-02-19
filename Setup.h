@@ -1,6 +1,6 @@
 /*
     Setup.h - Pin Declarations, patterns, common variables & setup function for POVWand.
-    Created by Daniel Esteban, February 16, 2013.
+    Created by Daniel Esteban, February 19, 2013.
 */
 
 #ifndef Config_h
